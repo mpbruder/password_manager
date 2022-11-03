@@ -1,0 +1,26 @@
+version: '3'
+services:
+  mysql_db:
+    build: ./mysql/
+    restart: always
+    environment:
+      MYSQL_DATABASE: "secrets_db"
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    networks:
+      - app-tier
+
+  # python_app:
+  #   build: ./pythonapp/
+  #   depends_on:
+  #     - mysql_db
+  #   networks:
+  #     - app-tier
+  #   command: 
+  #     tail -f /dev/null
+
+networks:
+  app-tier:
+    driver: bridge
