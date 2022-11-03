@@ -182,11 +182,10 @@ def query_menu():
         cprint("[!] Invalid option, please insert only a number!",
                "red", attrs=["bold"], file=sys.stderr)
 
+
 #####################################
 # Main
 #####################################
-
-
 def main(connection):
 
     while True:
@@ -236,7 +235,7 @@ def main(connection):
                    "red", attrs=["bold"], file=sys.stderr)
             time.sleep(3)
 
-
+# Start
 if __name__ == "__main__":
     try:
         connection = mysql.connector.connect(host=host,
@@ -252,5 +251,5 @@ if __name__ == "__main__":
         cprint("\n\nThank you by coming! :)\n\n", "yellow")
         exit()
     except Error as e:
-        cprint(f"[!] Error while connecting to MySQL\n[!] {e}", 
-            "red", attrs=["bold"], file=sys.stderr)
+        cprint(f"[!] Error while connecting to MySQL\n[!] {e}",
+               "red", attrs=["bold"], file=sys.stderr)
