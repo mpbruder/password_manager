@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # Python container
+  python:
+    build: ./python/
+    container_name: python-container
+    depends_on:
+      - mysql
+    networks:
+      - app-tier
+    stdin_open: true
+    tty: true
+  
+  #  MySQL container
+  mysql:
+    build: ./mysql/
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_DATABASE: "secrets_db"
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    networks:
+      - app-tier
+
+networks:
+  app-tier:
+    driver: bridge
