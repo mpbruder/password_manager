@@ -2,18 +2,18 @@ version: '3'
 services:
   # Python container
   python:
-    build: ./python/
+    build: ./app/
     container_name: python-container
+    stdin_open: true
+    tty: true
     depends_on:
       - mysql
     networks:
       - app-tier
-    stdin_open: true
-    tty: true
   
   #  MySQL container
   mysql:
-    build: ./mysql/
+    build: ./data/
     container_name: mysql-container
     restart: always
     environment:
