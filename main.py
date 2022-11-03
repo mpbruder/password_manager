@@ -13,7 +13,7 @@ def test_connection(connection):
         cursor = connection.cursor()
         cursor.execute("select database();")
         record = cursor.fetchall()
-        cprint(f"You're connected to database: {record}" , attrs=["dark"])
+        cprint(f"You're connected to database: {record}", attrs=["dark"])
         cursor.close()
 
 
@@ -151,8 +151,9 @@ def query_count(connection, res, type):
 
 
 def format_to_command_line(result):
+    print("\n")
     cprint("-" * 30, "blue")
-    cprint(f"YOUR {len(result)} CREDENTIALS", "blue")
+    cprint(f"YOU HAVE {len(result)} CREDENTIAL", "blue")
     cprint("-" * 30, "blue")
     for index, item in enumerate(result):
         cprint(f"\nITEM {index + 1}", "green")
@@ -166,18 +167,25 @@ def query_menu():
     cprint("QUERY CREDENTIAL BY ...", "blue")
     cprint("-" * 30, "blue")
     print(QUERY_OPTIONS)
-    opt = int(input(": "))
-    if opt == 1:
-        return "url"
-    elif opt == 2:
-        return "user"
+    opt = input(": ").strip()
+    if opt.isnumeric():
+        opt = int(opt)
+        if opt == 1:
+            return "url"
+        elif opt == 2:
+            return "user"
+        else:
+            cprint("[!] Invalid option, choose between 1 and 2!",
+                   "red", attrs=["bold"], file=sys.stderr)
     else:
-        print("Invalid option, try another one!")
-
+        cprint("[!] Invalid option, please insert only a number!",
+               "red", attrs=["bold"], file=sys.stderr)
 
 #####################################
 # Main
 #####################################
+
+
 def main(connection):
 
     while True:
@@ -197,16 +205,22 @@ def main(connection):
                 add_credential(connection)
                 input("\n\nPress enter to return to the previous menu\n")
             elif opt == 2:  # Read
-                res = query_menu()
+                res = 0
+                while res not in ("url", "user"):
+                    res = query_menu()
                 result = find_credential(connection, res)
                 format_to_command_line(result)
                 input("\n\nPress enter to return to the previous menu\n")
             elif opt == 3:  # Update
-                res = query_menu()
+                res = 0
+                while res not in ("url", "user"):
+                    res = query_menu()
                 update_credential(connection, res)
                 input("\n\nPress enter to return to the previous menu\n")
             elif opt == 4:  # Delete
-                res = query_menu()
+                res = 0
+                while res not in ("url", "user"):
+                    res = query_menu()
                 delete_credential(connection, res)
                 input("\n\nPress enter to return to the previous menu\n")
             elif opt == 5:  # Read all
@@ -235,7 +249,6 @@ if __name__ == "__main__":
         exit()
     except Error as e:
         print("Error while connecting to MySQL", e)
-
 
     finally:
         if connection.is_connected():
