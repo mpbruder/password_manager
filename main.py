@@ -244,7 +244,7 @@ if __name__ == "__main__":
                                              user=user,
                                              password=password)
         main(connection)
-        
+
         if connection.is_connected():
             connection.close()
 
