@@ -4,6 +4,7 @@ import time
 import mysql.connector
 from mysql.connector import Error
 from termcolor import colored, cprint
+from secrets import host, database, user, password
 
 # Testing BD Connection
 def test_connection(connection):
@@ -238,18 +239,18 @@ def main(connection):
 
 if __name__ == "__main__":
     try:
-        connection = mysql.connector.connect(host='localhost',
-                                             database='secrets_db',
-                                             user='mpbruder',
-                                             password='0123')
+        connection = mysql.connector.connect(host=host,
+                                             database=database,
+                                             user=user,
+                                             password=password)
         main(connection)
+        
+        if connection.is_connected():
+            connection.close()
 
     except KeyboardInterrupt as ki:
         cprint("\n\nThank you by coming! :)\n\n", "yellow")
         exit()
     except Error as e:
-        print("Error while connecting to MySQL", e)
-
-    finally:
-        if connection.is_connected():
-            connection.close()
+        cprint(f"[!] Error while connecting to MySQL\n[!] {e}", 
+            "red", attrs=["bold"], file=sys.stderr)
