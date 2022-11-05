@@ -173,10 +173,10 @@ def query_menu():
         elif opt == 2:
             return "user"
         else:
-            cprint("[!] Invalid option, choose between 1 and 2!",
+            cprint("\n[!] Invalid option, choose between 1 and 2!",
                    "red", attrs=["bold"], file=sys.stderr)
     else:
-        cprint("[!] Invalid option, please insert only a number!",
+        cprint("\n[!] Invalid option, please insert only a number!",
                "red", attrs=["bold"], file=sys.stderr)
 
 
@@ -224,11 +224,11 @@ def main(connection):
                 show_all_credentials(connection)
                 input(colored("\n\nPress enter to return to the previous menu\n", attrs=["dark"]))
             else:
-                cprint("[!] Invalid option, choose between 0 and 5!",
+                cprint("\n[!] Invalid option, choose between 0 and 5!",
                        "red", attrs=["bold"], file=sys.stderr)
                 time.sleep(3)
         else:
-            cprint("[!] Invalid option, please insert only a number!",
+            cprint("\n[!] Invalid option, please insert only a number!",
                    "red", attrs=["bold"], file=sys.stderr)
             time.sleep(3)
 
