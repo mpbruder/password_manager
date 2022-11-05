@@ -46,7 +46,7 @@ OPTIONS = """1. Add a new credential
 """
 
 QUERY_OPTIONS = """1. URL
-2. Username / email
+2. Username
 """
 
 
@@ -56,9 +56,9 @@ def add_credential(connection):
     cprint("-" * 30, "blue")
     cprint("INSERT THE CREDENTIAL", "blue")
     cprint("-" * 30, "blue")
-    url = input("URL: ").strip()
-    user = input("Username / email: ").strip()
-    password = input("Password: ").strip()
+    url = input("+ URL: ").strip()
+    user = input("+ Username: ").strip()
+    password = input("+ Password: ").strip()
     command = f'INSERT INTO secrets(url, user, password) VALUES("{url}", "{user}", "{password}")'
     cursor = connection.cursor()
     cursor.execute(command)
@@ -69,11 +69,10 @@ def add_credential(connection):
 # 2. Find an existing password
 def find_credential(connection, res):
     if res == "url":
-        url = input(": URL -> ").strip()
-        command = f'select * from secrets where url = "{url}"'
+        to_search = input("* URL -> ").strip()
     elif res == "user":
-        user = input(": User/email -> ").strip()
-        command = f'select * from secrets where user = "{user}"'
+        to_search = input("* Username -> ").strip()
+    command = f'select * from secrets where {res} = "{to_search}"'
     cursor = connection.cursor()
     cursor.execute(command)
     result = cursor.fetchall()
@@ -84,23 +83,22 @@ def find_credential(connection, res):
 # 3. Update an existing password
 def update_credential(connection, res):
     if res == "url":
-        url = input(": URL -> ").strip()
-        new_value_url = input(": New value (URL) -> ").strip()
-        new_value_user = input(": New value (User) -> ").strip()
-        new_value_pass = input(": New value (Password) -> ").strip()
-        command = f'update secrets set url = "{new_value_url}", user ="{new_value_user}", password ="{new_value_pass}" where url = "{url}"'
-        opt2 = input(
-            f"\n\n{len(query_count(connection, res, url))} item will be updated, are you sure? [Y/n] ").strip().lower()
+        to_search = input("* URL -> ").strip()
     elif res == "user":
-        user = input(": User/email -> ").strip()
-        new_value = input(": New value -> ").strip()
-        command = f'update secrets set url = "{new_value_url}", user ="{new_value_user}", password ="{new_value_pass}" where user = "{user}"'
-        opt2 = input(
-            f"\n\n{len(query_count(connection, res, user))} item will be updated, are you sure? [Y/n] ").strip().lower()
+        to_search = input("* Username -> ").strip()
+        
+    new_value_url = input("+ New value (URL) -> ").strip()
+    new_value_user = input("+ New value (Username) -> ").strip()
+    new_value_pass = input("+ New value (Password) -> ").strip()
+
+    opt2 = input(
+        f"\n\n{query_count(connection, res, to_search)} item will be updated, are you sure? [Y/n] ").strip().lower()
+
+    command = f'update secrets set url = "{new_value_url}", user ="{new_value_user}", password ="{new_value_pass}" where {res} = "{to_search}"'
     cursor = connection.cursor()
     cursor.execute(command)
     cursor.close()
-
+    
     if opt2 == "y":
         connection.commit()
     else:
@@ -110,19 +108,18 @@ def update_credential(connection, res):
 # 4. Delete a password
 def delete_credential(connection, res):
     if res == "url":
-        url = input(": URL -> ").strip()
-        command = f'delete from secrets where url = "{url}"'
-        opt2 = input(
-            f"\n\n{len(query_count(connection, res, url))} item will be deleted, are you sure? [Y/n] ").strip().lower()
+        to_search = input("* URL -> ").strip()        
     elif res == "user":
-        user = input(": User/email -> ").strip()
-        command = f'delete from secrets where user = "{user}"'
-        opt2 = input(
-            f"\n\n{len(query_count(connection, res, user))} item will be deleted, are you sure? [Y/n] ").strip().lower()
+        to_search = input("* Username -> ").strip()
+    
+    opt2 = input(
+        f"\n\n{query_count(connection, res, to_search)} item will be deleted, are you sure? [Y/n] ").strip().lower()
+    
+    command = f'delete from secrets where {res} = "{to_search}"'
     cursor = connection.cursor()
     cursor.execute(command)
     cursor.close()
-
+    
     if opt2 == "y":
         connection.commit()
     else:
@@ -142,13 +139,13 @@ def show_all_credentials(connection):
 #####################################
 # Aux functions
 #####################################
-def query_count(connection, res, type):
-    command = f'select * from secrets where {res} = "{type}"'
+def query_count(connection, res, to_search):
+    command = f'select * from secrets where {res} = "{to_search}"'
     cursor = connection.cursor()
     cursor.execute(command)
     result = cursor.fetchall()
     cursor.close()
-    return result
+    return len(result)
 
 
 def format_to_command_line(result):
@@ -159,7 +156,7 @@ def format_to_command_line(result):
     for index, item in enumerate(result):
         cprint(f"\nITEM {index + 1}", "green")
         cprint("-" * 30, "green")
-        print(f"URL = {item[1]}\nUser = {item[2]}\nPassword = {item[3]}")
+        print(f"URL = {item[1]}\nUsername = {item[2]}\nPassword = {item[3]}")
 
 
 def query_menu():
@@ -235,6 +232,7 @@ def main(connection):
                    "red", attrs=["bold"], file=sys.stderr)
             time.sleep(3)
 
+
 # Start
 if __name__ == "__main__":
     try:
@@ -250,6 +248,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt as ki:
         cprint("\n\nThank you by coming! :)\n\n", "yellow")
         exit()
+
     except Error as e:
         cprint(f"[!] Error while connecting to MySQL\n[!] {e}",
                "red", attrs=["bold"], file=sys.stderr)

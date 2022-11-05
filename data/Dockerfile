@@ -1,3 +1,3 @@
-FROM mysql/mysql-server
+FROM mysql/mysql-server:8.0
 
 ADD schema.sql /docker-entrypoint-initdb.d
