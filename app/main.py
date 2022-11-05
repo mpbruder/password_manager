@@ -200,29 +200,29 @@ def main(connection):
                 exit()
             elif opt == 1:  # Create
                 add_credential(connection)
-                input("\n\nPress enter to return to the previous menu\n")
+                input(colored("\n\nPress enter to return to the previous menu\n", attrs=["dark"]))
             elif opt == 2:  # Read
                 res = 0
                 while res not in ("url", "user"):
                     res = query_menu()
                 result = find_credential(connection, res)
                 format_to_command_line(result)
-                input("\n\nPress enter to return to the previous menu\n")
+                input(colored("\n\nPress enter to return to the previous menu\n", attrs=["dark"]))
             elif opt == 3:  # Update
                 res = 0
                 while res not in ("url", "user"):
                     res = query_menu()
                 update_credential(connection, res)
-                input("\n\nPress enter to return to the previous menu\n")
+                input(colored("\n\nPress enter to return to the previous menu\n", attrs=["dark"]))
             elif opt == 4:  # Delete
                 res = 0
                 while res not in ("url", "user"):
                     res = query_menu()
                 delete_credential(connection, res)
-                input("\n\nPress enter to return to the previous menu\n")
+                input(colored("\n\nPress enter to return to the previous menu\n", attrs=["dark"]))
             elif opt == 5:  # Read all
                 show_all_credentials(connection)
-                input("\n\nPress enter to return to the previous menu\n")
+                input(colored("\n\nPress enter to return to the previous menu\n", attrs=["dark"]))
             else:
                 cprint("[!] Invalid option, choose between 0 and 5!",
                        "red", attrs=["bold"], file=sys.stderr)
@@ -249,7 +249,7 @@ def authentication(connection):
         os.system("clear")
         test_connection(connection)
         cprint(LOGO, "green", attrs=["bold"], file=sys.stderr)
-        master_password = input("[!] SET A MASTER PASSWORD: ").strip()
+        master_password = input(colored("[!] SET A MASTER PASSWORD: ", "yellow")).strip()
 
         com = f'update auth set status = 1, master_password = "{master_password}"'
         cursor = connection.cursor()
@@ -262,7 +262,7 @@ def authentication(connection):
             os.system("clear")
             test_connection(connection)
             cprint(LOGO, "green", attrs=["bold"], file=sys.stderr)
-            master_password = input("[!] MASTER PASSWORD: ").strip()
+            master_password = input(colored("[!] MASTER PASSWORD: ", "yellow")).strip()
 
             com = f'select * from auth where master_password = "{master_password}"'
             cursor = connection.cursor()
