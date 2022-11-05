@@ -31,12 +31,12 @@ Rode a aplicação python
 
 Inserção de uma nova credencial no banco de dados. Para acessar outras imagens do aplicativo, [clique aqui](img/).
 
-![App Screenshot](img/insert.gif)
-
+![App Gif](img/insert.gif)
+![App Screenshot](img/5.png)
 
 ## Melhorias
 
   Aqui estão algumas possíveis melhorias para o projeto:
-  * Login de usuários
+  * Gerenciamento de usuários
   * Criptografia das senhas 
 
