@@ -13,7 +13,7 @@ def test_connection(connection):
         cprint(f"Connected to MySQL Server version {db_Info}", attrs=["dark"])
         cursor = connection.cursor()
         cursor.execute("select database();")
-        record = cursor.fetchall()
+        record = cursor.fetchone()
         cprint(f"You're connected to database: {record}", attrs=["dark"])
         cursor.close()
 
@@ -233,6 +233,54 @@ def main(connection):
             time.sleep(3)
 
 
+#####################################
+# Authentication
+#####################################
+def authentication(connection):
+    command = f'select * from auth'
+    cursor = connection.cursor()
+    cursor.execute(command)
+    response = cursor.fetchone()
+    cursor.close()
+
+    # [1] = `status` -> 0 = first login, 1 = already setted
+    print(response[1])
+    if response[1] == 0:
+        os.system("clear")
+        test_connection(connection)
+        cprint(LOGO, "green", attrs=["bold"], file=sys.stderr)
+        master_password = input("[!] SET A MASTER PASSWORD: ").strip()
+
+        com = f'update auth set status = 1, master_password = "{master_password}"'
+        cursor = connection.cursor()
+        cursor.execute(com)
+        cursor.close()
+        connection.commit()
+
+    elif response[1] == 1:
+        while True:
+            os.system("clear")
+            test_connection(connection)
+            cprint(LOGO, "green", attrs=["bold"], file=sys.stderr)
+            master_password = input("[!] MASTER PASSWORD: ").strip()
+
+            com = f'select * from auth where master_password = "{master_password}"'
+            cursor = connection.cursor()
+            cursor.execute(com)
+            result = cursor.fetchone()
+            cursor.close()
+
+            if result is None:
+                cprint(f"\n[!] Incorrect password, please try again!",
+                       "red", attrs=["bold"], file=sys.stderr)
+                time.sleep(2)
+            else:
+                cprint(f"\n[!] Correct password! :)",
+                       "green", attrs=["bold"], file=sys.stderr)
+                time.sleep(2)
+                break
+
+
 # Start
 if __name__ == "__main__":
     try:
@@ -240,6 +288,8 @@ if __name__ == "__main__":
                                              database=database,
                                              user=user,
                                              password=password)
+        
+        authentication(connection)
         main(connection)
 
         if connection.is_connected():
